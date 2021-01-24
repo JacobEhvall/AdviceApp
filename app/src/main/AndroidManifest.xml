@@ -13,7 +13,7 @@
         tools:ignore="ExtraText">
         android:windowSoftInputMode="adjustPan"
         <activity android:name=".LoginPage"></activity>
-        <activity android:name=".MainActivity">
+        <activity android:name=".Fragments">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

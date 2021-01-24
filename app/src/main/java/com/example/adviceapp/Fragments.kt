@@ -10,7 +10,7 @@ import com.example.adviceapp.fragments.PersonInfoFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
-class MainActivity : AppCompatActivity() {
+class Fragments : AppCompatActivity() {
 
     lateinit var homeFragment: HomeFragment
     lateinit var addFragment: AddFragment
@@ -20,6 +20,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        homeFragment = HomeFragment()
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.wrap_view,homeFragment )
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .commit()
 
 
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
