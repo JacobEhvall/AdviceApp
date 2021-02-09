@@ -4,28 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragments">
+    tools:context=".HomePage">
 
 
-  <com.google.android.material.bottomnavigation.BottomNavigationView
-      android:id="@+id/bottomNavigation"
+  <androidx.recyclerview.widget.RecyclerView
+      android:id="@+id/recyclerview"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      app:itemIconTint="@color/black"
-      app:itemTextColor="@color/black"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:menu="@menu/bottom_bar" />
+      app:layout_constraintTop_toTopOf="parent"
+      app:layout_constraintVertical_bias="0.0"
+      tools:listitem="@layout/advice_card" />
 
-  <FrameLayout
-      android:id="@+id/wrap_view"
-      android:layout_width="406dp"
-      android:layout_height="672dp"
-      android:layout_above="@+id/bottomNavigation"
-      app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+      android:id="@+id/floatingActionButton"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginEnd="16dp"
+      android:layout_marginBottom="16dp"
+      app:backgroundTint="#4CAF50"
+      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toTopOf="parent"/>
+      app:srcCompat="@drawable/ic_add" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

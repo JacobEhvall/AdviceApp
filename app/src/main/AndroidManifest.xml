@@ -11,15 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdviceApp"
         tools:ignore="ExtraText">
-        android:windowSoftInputMode="adjustPan"
-        <activity android:name=".LoginPage"></activity>
-        <activity android:name=".Fragments">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".PostItem"/>
+        <activity android:name=".HomePage">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            <category android:name="android.intent.category.LAUNCHER" />
+           </intent-filter>
+        />
+    </activity>
     </application>
 
 </manifest>

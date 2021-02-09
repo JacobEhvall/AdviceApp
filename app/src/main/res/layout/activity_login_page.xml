@@ -37,12 +37,13 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="216dp"
-        android:layout_height="79dp"
+        android:layout_width="225dp"
+        android:layout_height="99dp"
         android:layout_marginBottom="50dp"
         android:text="FixIt"
         android:textAlignment="center"
-        android:textSize="50sp"
+        android:textColor="#2196F3"
+        android:textSize="70sp"
         app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
@@ -73,37 +74,17 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3"
         app:rippleColor="#000000" />
 
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="76dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="96dp"
-        android:layout_marginBottom="16dp"
-        android:text="Username"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="72dp"
-        android:layout_height="18dp"
-        android:layout_marginStart="100dp"
-        android:layout_marginBottom="11dp"
-        android:text="Email"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPersonName3"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="165dp"
-        android:layout_height="177dp"
+        android:layout_width="136dp"
+        android:layout_height="112dp"
         android:layout_marginBottom="18dp"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.531"
         app:srcCompat="@drawable/lightbulb" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.adviceapp.R
 
-
+/*
 class HomeFragment : Fragment() {
 
 
@@ -23,3 +23,4 @@ class HomeFragment : Fragment() {
 
 
     }
+*/

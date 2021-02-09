@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.example.adviceapp.R
 
 
-
+/*
 class PersonInfoFragment : Fragment() {
 
 
@@ -20,3 +20,4 @@ class PersonInfoFragment : Fragment() {
     }
 
 }
+ */
