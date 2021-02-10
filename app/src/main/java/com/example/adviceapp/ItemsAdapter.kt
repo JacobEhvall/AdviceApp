@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ItemsAdapter (
 
-    private val context: Context,
-    private val adviceList: List<PostData>) : RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
+        private val context: Context,
+        private val adviceList: List<PostData>) : RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)
 
@@ -21,12 +21,16 @@ class ItemsAdapter (
 
     override fun getItemCount() = adviceList.size
 
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val advice = adviceList[position]
 
-        holder.titleText.text = advice.title
-        holder.descriptionText.text = advice.description
+        val adviceTitle = advice.title
+        val adviceDescription = advice.description
+        // TODO Line for imageholder
+        holder.titleText.text = adviceTitle
+        holder.descriptionText.text = adviceDescription
     }
 
 

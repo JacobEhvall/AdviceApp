@@ -2,7 +2,7 @@ package com.example.adviceapp
 
 
 data class PostData (
-    val title : String? = null,
-    val description : String? = null
+    var title : String? = null,
+    var description : String? = null
     //val item_image : Int? = null
 )

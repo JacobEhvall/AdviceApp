@@ -12,7 +12,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 class HomePage : AppCompatActivity() {
 
     lateinit var db: FirebaseFirestore
-    private var adviceModelList = mutableListOf<PostData>()
+    private var adviceList = mutableListOf<PostData>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +25,7 @@ class HomePage : AppCompatActivity() {
 
 
         /* This is the adapter that binds the data together */
-        val adapter = ItemsAdapter(this, adviceModelList)
+        val adapter = ItemsAdapter(this, adviceList)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -47,30 +47,30 @@ class HomePage : AppCompatActivity() {
 
 
         val fab = findViewById<View>(R.id.floatingActionButton)
-        fab.setOnClickListener{ view ->
+        fab.setOnClickListener{
             val intent = Intent(this, PostItem::class.java)
             startActivity(intent)
         }
 
 
-        db.collection("advice")
-        .addSnapshotListener { snapshot, e ->
+
+        val docRef = db.collection("advice")
+        docRef.addSnapshotListener { snapshot, e ->
             if (snapshot != null) {
-                adviceModelList.clear()
+                adviceList.clear()
                 for (document in snapshot.documents) {
                     val advicePost = document.toObject(PostData::class.java)
                     if (advicePost != null) {
-                        adviceModelList.add(advicePost)
+                        adviceList.add(advicePost)
                     }
                     adapter.notifyDataSetChanged()
                 }
 
-                println("!!! ADDED DATA TO ADVICELIST  ${adviceModelList}")
+                //println("!!! ADDED DATA TO ADVICELIST  ${adviceList}")
 
             }
 
         }
-
     }
 }
 
