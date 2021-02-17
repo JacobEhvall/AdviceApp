@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -28,7 +29,6 @@ class ItemsAdapter (
 
         val adviceTitle = advice.title
         val adviceDescription = advice.description
-        // TODO Line for imageholder
         holder.titleText.text = adviceTitle
         holder.descriptionText.text = adviceDescription
     }
@@ -37,15 +37,18 @@ class ItemsAdapter (
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.title_text)
         val descriptionText: TextView = itemView.findViewById(R.id.description_text)
-        //val descriptionImage: ImageView = itemView.findViewById(R.id.item_image)
+        val descriptionImage: ImageView = itemView.findViewById(R.id.item_image)
+
+        // I think it´s easier to get ONLY access to the library.
 
     }
 
 }
-        /*
-        if (itemImage != null) {
-            holder.descriptionImage.setImageResource(itemImage.toInt())
-        }*/
+
+/*
+if (itemImage != null) {
+    holder.descriptionImage.setImageResource(itemImage.toInt())
+}*/
 
 
         /*
