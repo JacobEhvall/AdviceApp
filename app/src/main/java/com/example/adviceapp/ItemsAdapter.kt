@@ -31,6 +31,8 @@ class ItemsAdapter (
         val adviceDescription = advice.description
         holder.titleText.text = adviceTitle
         holder.descriptionText.text = adviceDescription
+
+
     }
 
 

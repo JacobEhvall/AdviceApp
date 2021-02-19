@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -21,12 +22,14 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_post_item.*
+import java.io.ByteArrayOutputStream
+import java.util.*
 
 
 class PostItem : AppCompatActivity() {
 
     lateinit var db : FirebaseFirestore
-    private var imageUri: Uri? = null
+    private lateinit var imageUri : String
     var CAMERA_PERMISSION = 123
     var CAMERA_REQUEST_CODE = 134
 
@@ -42,9 +45,7 @@ class PostItem : AppCompatActivity() {
         /* This button do we call to post the userInput for now,
         but we want aswell the image to be posted! */
 
-        val addImage = add_image
-        addImage.setOnClickListener {
-
+        add_image.setOnClickListener {
 
             addPicture()
 
@@ -90,6 +91,7 @@ class PostItem : AppCompatActivity() {
     }
 
 
+    /*
     @RequiresApi(Build.VERSION_CODES.M)
     private fun picturePermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
@@ -98,6 +100,7 @@ class PostItem : AppCompatActivity() {
             requestPermissions(permissions, CAMERA_REQUEST_CODE)
         }
     }
+     */
 
 
 
@@ -121,10 +124,12 @@ class PostItem : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("QueryPermissionsNeeded")
     private fun chooseTakenPhoto() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also {
             addImageIntent -> addImageIntent.resolveActivity(this.packageManager)?.also {
             startActivityForResult(addImageIntent, CAMERA_REQUEST_CODE )
+
         }
 
         }
@@ -145,22 +150,44 @@ class PostItem : AppCompatActivity() {
                 }
         }
     }
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-                add_image.setImageURI(data?.data)
-                imageUri = data?.data
+        if (requestCode == 123) {
+            imageUri = UUID.randomUUID().toString()
         }
+        val bmp = data?.extras?.get("data") as Bitmap
+        add_image.setImageBitmap(bmp)
+        val bitmap = (add_image.drawable as BitmapDrawable).bitmap
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val data = baos.toByteArray()
+    }
+
+        /*
+        if (requestCode == CAMERA_REQUEST_CODE && data!= null && resultCode == Activity.RESULT_OK) {
+
+            imageUri = data.data.toString()
+            add_image.setImageURI(Uri.parse(imageUri))
+
+        }
+        println("!!!${add_image}")
 
     }
 
+         */
 
     private fun toFirstPage() {
         val intent = Intent(this, HomePage::class.java)
             startActivity(intent)
     }
+    //val uri = data.data
+
+    /*
+    val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
+
+    val bitmapImage = BitmapDrawable(bitmap)
+    add_image.setBackgroundDrawable(bitmapImage)
+    */
 
 }
 
