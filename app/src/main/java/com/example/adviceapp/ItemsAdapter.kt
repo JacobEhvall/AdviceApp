@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_post_item.view.*
 
 class ItemsAdapter (
 
@@ -21,7 +22,6 @@ class ItemsAdapter (
     }
 
     override fun getItemCount() = adviceList.size
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
@@ -40,8 +40,6 @@ class ItemsAdapter (
         val titleText: TextView = itemView.findViewById(R.id.title_text)
         val descriptionText: TextView = itemView.findViewById(R.id.description_text)
         val descriptionImage: ImageView = itemView.findViewById(R.id.item_image)
-
-        // I think it´s easier to get ONLY access to the library.
 
     }
 

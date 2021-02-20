@@ -2,34 +2,29 @@ package com.example.adviceapp
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_post_item.*
 import java.io.ByteArrayOutputStream
 import java.util.*
 
 
+
 class PostItem : AppCompatActivity() {
 
     lateinit var db : FirebaseFirestore
-    private lateinit var imageUri : String
+    lateinit var imageUri : String
     var CAMERA_PERMISSION = 123
     var CAMERA_REQUEST_CODE = 134
 
@@ -154,13 +149,28 @@ class PostItem : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 123) {
             imageUri = UUID.randomUUID().toString()
+
         }
         val bmp = data?.extras?.get("data") as Bitmap
         add_image.setImageBitmap(bmp)
         val bitmap = (add_image.drawable as BitmapDrawable).bitmap
         val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
         val data = baos.toByteArray()
+
+
+
+
+
+
+
+
+
+        // To be able to fit the image inside the imageview I think we have to crop the image
+
+
+
+        // Check out 1:07:50 to see the croping
     }
 
         /*
