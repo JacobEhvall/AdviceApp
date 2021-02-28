@@ -1,13 +1,15 @@
 package com.example.adviceapp
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_post_item.view.*
+import com.bumptech.glide.Glide
+
 
 class ItemsAdapter (
 
@@ -29,9 +31,20 @@ class ItemsAdapter (
 
         val adviceTitle = advice.title
         val adviceDescription = advice.description
+        //val image = advice.imageUri
+
+        //Glide.with(holder.descriptionImage)
+                //.load(advice.imageUri)
+                //.into(holder.postedImages)
         holder.titleText.text = adviceTitle
         holder.descriptionText.text = adviceDescription
 
+
+       /* Bra videolänk för att använda Glide (Kollat på tidigare)
+
+        //https://www.youtube.com/watch?v=EmomJDgR7UQ&t=103s&ab_channel=RahulPandey
+
+        */
 
     }
 
@@ -39,7 +52,8 @@ class ItemsAdapter (
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.title_text)
         val descriptionText: TextView = itemView.findViewById(R.id.description_text)
-        val descriptionImage: ImageView = itemView.findViewById(R.id.item_image)
+        //val descriptionImage: ImageView = itemView.findViewById(R.id.add_image)
+        //val postedImages : ImageView = itemView.findViewById(R.id.item_image)
 
     }
 
