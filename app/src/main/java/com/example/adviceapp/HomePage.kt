@@ -20,7 +20,7 @@ class HomePage : AppCompatActivity() {
     lateinit var imageBitmap : Bitmap
     lateinit var db: FirebaseFirestore
     private var adviceList = mutableListOf<PostData>()
-    private var showAdviceList = mutableListOf<PostData>()
+    private var showAdviceList = mutableListOf<PostData>() // Empty list with no data
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,10 +30,12 @@ class HomePage : AppCompatActivity() {
 
         /* Connect and get data from Firebase  */
          db = FirebaseFirestore.getInstance()
+        // add everything from adviceList to our new empty list showAdviceList
+
 
 
         /* This is the adapter that binds the data together */
-        val adapter = ItemsAdapter(this, adviceList)
+        val adapter = ItemsAdapter(this, showAdviceList)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -47,6 +49,8 @@ class HomePage : AppCompatActivity() {
                 val advice =  document.toObject(PostData::class.java)
                 if (advice != null)
                     adviceList.add(advice)
+                     showAdviceList.addAll(adviceList)
+                    //showAdviceList.addAll(adviceList)
             }
             adapter.notifyDataSetChanged()
         }
@@ -87,8 +91,8 @@ class HomePage : AppCompatActivity() {
 
         if ( menuItem!= null ) {
 
-            val search = menuItem.actionView as SearchView
-            search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            val searchResult = menuItem.actionView as SearchView
+            searchResult.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
                 override fun onQueryTextSubmit(query: String?): Boolean {
                     return true
@@ -99,7 +103,7 @@ class HomePage : AppCompatActivity() {
 
                     if (newText!!.isNotEmpty()) {
 
-                        adviceList.clear()
+                        showAdviceList.clear()
                         val searchfield = newText.toLowerCase(Locale.getDefault())
                         adviceList.forEach {
 
@@ -117,6 +121,8 @@ class HomePage : AppCompatActivity() {
                         recyclerview.adapter?.notifyDataSetChanged()
 
                         // We want to GET DATA from adviceList and to be displayed in another list (DisplayList in the video example)
+                        // displayList is an hardcoded list, adviceList = Firebase data we want to filter
+                        // we add everthing to an emptylist and filter the list
                     }
 
                     return true
