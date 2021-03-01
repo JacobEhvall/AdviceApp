@@ -2,12 +2,10 @@ package com.example.adviceapp
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,6 +15,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -30,7 +29,7 @@ class PostItem : AppCompatActivity() {
 
     private lateinit var context: Context
     lateinit var db: FirebaseFirestore
-    private lateinit var imageUri: Uri
+    private lateinit var imageUri : Uri         // unsure if the images can be private?
     private var storageRef: StorageReference? = null
     private var firebaseStore: FirebaseStorage? = null
 
@@ -45,7 +44,7 @@ class PostItem : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_item)
 
-        getImage()
+        selectImage()
 
         postToRecyclerview()
 
@@ -60,7 +59,7 @@ class PostItem : AppCompatActivity() {
 
     }
 
-    private fun getImage() {
+    private fun selectImage() {
 
         add_image.setOnClickListener {
 
@@ -175,18 +174,18 @@ class PostItem : AppCompatActivity() {
 
     private fun getAndSaveUri(bitmap: Bitmap) {
         val baos = ByteArrayOutputStream()
-        val storage = FirebaseStorage.getInstance()
+        val storageImage = FirebaseStorage.getInstance()
                 .reference
                 .child("home/")
 
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val image = baos.toByteArray()
 
-        val uploadToFirebase = storage.putBytes(image)
+        val uploadToFirebase = storageImage.putBytes(image)
 
         uploadToFirebase.addOnCompleteListener { uploadTask ->
             if (uploadTask.isSuccessful) {
-                storage.downloadUrl.addOnCompleteListener { urlTask ->
+                storageImage.downloadUrl.addOnCompleteListener { urlTask ->
                     urlTask.result?.let {
                         imageUri = it
 
@@ -197,8 +196,11 @@ class PostItem : AppCompatActivity() {
                 }
             }
         }
+       // storageImage.child("home/").putFile(imageUri).addOnCompleteListener {
+            //storageImage.child("home/").downloadUrl
+
+        }
     }
-}
 
 
 

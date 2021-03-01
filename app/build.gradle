@@ -39,7 +39,7 @@ dependencies {
     // possible to add add save images to Firebase Storage
     implementation 'com.google.firebase:firebase-storage:19.2.1'
 
-    //Trying Glide instead
+    //Trying Glide to get and post image to Firebase
     implementation 'com.github.bumptech.glide:glide:4.11.0'
 
 

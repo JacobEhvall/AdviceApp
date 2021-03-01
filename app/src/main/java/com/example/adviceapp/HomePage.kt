@@ -1,7 +1,6 @@
 package com.example.adviceapp
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -17,7 +16,6 @@ import java.util.*
 
 class HomePage : AppCompatActivity() {
 
-    lateinit var imageBitmap : Bitmap
     lateinit var db: FirebaseFirestore
     private var adviceList = mutableListOf<PostData>()
     private var showAdviceList = mutableListOf<PostData>() // Empty list with no data
@@ -120,9 +118,6 @@ class HomePage : AppCompatActivity() {
                         showAdviceList.addAll(adviceList)
                         recyclerview.adapter?.notifyDataSetChanged()
 
-                        // We want to GET DATA from adviceList and to be displayed in another list (DisplayList in the video example)
-                        // displayList is an hardcoded list, adviceList = Firebase data we want to filter
-                        // we add everthing to an emptylist and filter the list
                     }
 
                     return true

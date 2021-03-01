@@ -2,6 +2,7 @@ package com.example.adviceapp
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-
 
 class ItemsAdapter (
 
@@ -29,13 +29,15 @@ class ItemsAdapter (
 
         val advice = adviceList[position]
 
+        /*
+        Glide.with(holder.descriptionImage.context)
+                .load(imageUri)
+                .into(holder.RecyclerviewImage)
+
+         */
+
         val adviceTitle = advice.title
         val adviceDescription = advice.description
-        //val image = advice.imageUri
-
-        //Glide.with(holder.descriptionImage)
-                //.load(advice.imageUri)
-                //.into(holder.postedImages)
         holder.titleText.text = adviceTitle
         holder.descriptionText.text = adviceDescription
 
@@ -53,7 +55,7 @@ class ItemsAdapter (
         val titleText: TextView = itemView.findViewById(R.id.title_text)
         val descriptionText: TextView = itemView.findViewById(R.id.description_text)
         //val descriptionImage: ImageView = itemView.findViewById(R.id.add_image)
-        //val postedImages : ImageView = itemView.findViewById(R.id.item_image)
+        //val RecyclerviewImage : ImageView = itemView.findViewById(R.id.item_image)
 
     }
 
