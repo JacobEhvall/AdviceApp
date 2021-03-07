@@ -7,16 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.adviceapp.R
 
-/*
-class AddFragment : Fragment() {
+
+
+class MapFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.activity_add_advice, container, false)
+        return inflater.inflate(R.layout.activity_post_item, container, false)
     }
 
 }
- */
+
+

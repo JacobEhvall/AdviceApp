@@ -1,3 +1,4 @@
+
 package com.example.adviceapp
 
 import android.content.Intent
@@ -13,7 +14,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-
 class HomePage : AppCompatActivity() {
 
     lateinit var db: FirebaseFirestore
@@ -27,7 +27,7 @@ class HomePage : AppCompatActivity() {
 
 
         /* Connect and get data from Firebase  */
-         db = FirebaseFirestore.getInstance()
+        db = FirebaseFirestore.getInstance()
         // add everything from adviceList to our new empty list showAdviceList
 
 
@@ -45,10 +45,11 @@ class HomePage : AppCompatActivity() {
         adviceRef.get().addOnSuccessListener { documentSnapshot ->
             for (document in documentSnapshot.documents) {
                 val advice =  document.toObject(PostData::class.java)
-                if (advice != null)
+                if (advice  != null)
                     adviceList.add(advice)
-                     showAdviceList.addAll(adviceList)
-                    //showAdviceList.addAll(adviceList)
+                if (advice != null) {
+                    showAdviceList.add(advice)
+                }
             }
             adapter.notifyDataSetChanged()
         }
@@ -62,24 +63,6 @@ class HomePage : AppCompatActivity() {
             startActivity(intent)
         }
 
-
-        /* Listen and update the list as things will be added */
-        val docRef = db.collection("advice")
-        docRef.addSnapshotListener { snapshot, e ->
-            if (snapshot != null) {
-                adviceList.clear()
-                for (document in snapshot.documents) {
-                    val advicePost = document.toObject(PostData::class.java)
-                    if (advicePost != null) {
-                        adviceList.add(advicePost)
-                    }
-                    adapter.notifyDataSetChanged()
-                }
-
-                println("!!! ADDED DATA TO ADVICELIST  ${adviceList}")
-
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -123,18 +106,24 @@ class HomePage : AppCompatActivity() {
                     return true
 
                 }
-             })
+            })
+
+        }
+
+        return super.onCreateOptionsMenu(menu)
 
     }
-
-    return super.onCreateOptionsMenu(menu)
-
-}
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
     }
 }
+
+
+
+
+
+
 
 
 
