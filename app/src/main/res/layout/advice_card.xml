@@ -25,16 +25,17 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/item_image"
+            android:id="@+id/uploaded_image"
             android:layout_width="216dp"
             android:layout_height="168dp"
             android:layout_marginStart="104dp"
+            android:layout_marginBottom="16dp"
             android:foregroundGravity="fill"
             android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.913"
+            app:layout_constraintVertical_bias="1.0"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
@@ -45,9 +46,19 @@
             android:layout_marginEnd="164dp"
             android:layout_marginBottom="11dp"
             android:text="Description"
-            app:layout_constraintBottom_toTopOf="@+id/item_image"
+            app:layout_constraintBottom_toTopOf="@+id/uploaded_image"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_text" />
+
+        <CheckBox
+            android:id="@+id/add_favorite"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@android:color/transparent"
+            android:buttonTint="@color/red"
+            android:button="@drawable/add_favorite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

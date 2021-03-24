@@ -6,35 +6,34 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.icu.number.NumberFormatter.with
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.net.toFile
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.gms.tasks.Task
 //import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
-import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_post_item.*
-import kotlinx.android.synthetic.main.advice_card.*
 import java.io.ByteArrayOutputStream
-
-
 
 class PostItem : AppCompatActivity() {
 
     private lateinit var context: Context
     lateinit var db: FirebaseFirestore
-    //private lateinit var imageUri : Uri         // unsure if the images can be private?
-    //private var storageRef: StorageReference? = null
-    //private var firebaseStore: FirebaseStorage? = null
+    var finalImageURL = "test";
+
+    private var showAdviceList = mutableListOf<PostData>()
+
 
     companion object {
 
@@ -47,13 +46,15 @@ class PostItem : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_post_item)
 
-        //selectImage()
+
+        selectImage()
+
+        saveImageRecyclerview()
 
         postToRecyclerview()
 
 
         db = FirebaseFirestore.getInstance()
-       //storageRef = FirebaseStorage.getInstance().reference.child("posts/")
         //firebaseStore = FirebaseStorage.getInstance()
 
 
@@ -62,7 +63,6 @@ class PostItem : AppCompatActivity() {
 
     }
 
-    /*
     private fun selectImage() {
 
         add_image.setOnClickListener {
@@ -75,7 +75,6 @@ class PostItem : AppCompatActivity() {
 
     }
 
-     */
 
     private fun postToRecyclerview() {
 
@@ -84,6 +83,7 @@ class PostItem : AppCompatActivity() {
         postAdvice.setOnClickListener {
 
             addPost()
+
         }
 
     }
@@ -94,9 +94,11 @@ class PostItem : AppCompatActivity() {
             to be posted that´s sets a Bitmap as the content of this ImageView why we also what to declare the image in the "addPost" function.
          */
 
+
+
+        val imageURL = finalImageURL;
         val decribeInput = describe_title.text.toString()
         val descriptionInput = description_title.text.toString()
-
 
         // TODO We can specify an error message in here instead of regular Toast!
 
@@ -105,17 +107,21 @@ class PostItem : AppCompatActivity() {
 
         } else {
             // TODO maybe rename PostData to AdviceData?
-            val advice = PostData(
-                    decribeInput,
-                    descriptionInput
-            )
+            val advice = PostData(decribeInput, descriptionInput,imageURL)
             db.collection("advice").add(advice)
             toFirstPage()
+
+            /*  if you changes rules add this to be able to read and write (user can see added data to Firebase)
+            allow read, write: if request.time < timestamp.date(2020, 9, 2) */
+
+
+            /* Favorites list
+             https://stackoverflow.com/questions/62575483/favorite-list-with-firestore-in-android-studio-with-kotlin */
 
         }
 
     }
-    /*
+
     @SuppressLint("QueryPermissionsNeeded")
     private fun chooseTakenPhoto() {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { addImageIntent ->
@@ -127,8 +133,7 @@ class PostItem : AppCompatActivity() {
         }
     }
 
-     */
-  /*
+
     private fun addPicture() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(
@@ -147,14 +152,14 @@ class PostItem : AppCompatActivity() {
             chooseTakenPhoto()
         }
     }
-   */
+
 
     private fun toFirstPage() {
         val intent = Intent(this, HomePage::class.java)
         startActivity(intent)
     }
 
-    /*
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onRequestPermissionsResult(
             requestCode: Int, permissions:
@@ -171,8 +176,7 @@ class PostItem : AppCompatActivity() {
         }
     }
 
-     */
-/*
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
@@ -184,14 +188,12 @@ class PostItem : AppCompatActivity() {
 
     }
 
- */
 
-    /*
     private fun getAndSaveUri(bitmap: Bitmap) {
         val baos = ByteArrayOutputStream()
         val storageImage = FirebaseStorage.getInstance()
                 .reference
-                .child("home/")
+                .child("MinNyaBild/")
 
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val image = baos.toByteArray()
@@ -202,24 +204,65 @@ class PostItem : AppCompatActivity() {
             if (uploadTask.isSuccessful) {
                 storageImage.downloadUrl.addOnCompleteListener { urlTask ->
                     urlTask.result?.let {
-                        imageUri = it
 
                         add_image.setImageBitmap(bitmap)
+
+
+                        var theIMGURI = it;
+
+                        finalImageURL = theIMGURI.toString();
+                        println("???" + theIMGURI)
+
+
+
+
+
+                        // ""theIMGURI"""  skickar du upp med själva inlägget till databasen som en vanlig sträng
+                        // Här nere kan du nu göra själva requested till databasen för Posten
+                        //  ulpoadThePost();
+
 
                     }
 
                 }
             }
         }
-     */
 
-       // Uri.fromFile(imageUri.toFile())
-       // Picasso.with(context).load(imageUri).resize(100, 100).centerCrop().into(item_image)
-         //storageImage.child("home/").putFile(imageUri).addOnCompleteListener {
-         //storageImage.child("home/").downloadUrl
+
+        // Uri.fromFile(imageUri.toFile())
+        // Picasso.with(context).load(imageUri).resize(100, 100).centerCrop().into(item_image)
+        //storageImage.child("home/").putFile(imageUri).addOnCompleteListener {
+        //storageImage.child("home/").downloadUrl
 
 
     }
+
+
+    private fun saveImageRecyclerview() {
+
+        val imageStorage = FirebaseStorage.getInstance()
+        val imageRef = imageStorage.reference.child("posts")
+        val postedImageList = mutableListOf<PostData>()
+
+        val listImages: Task<ListResult> = imageRef.listAll()
+        listImages.addOnCompleteListener { result ->
+            val images: List<StorageReference> = result.result!!.items
+            images.forEachIndexed { index, item ->
+                item.downloadUrl.addOnSuccessListener {
+                    Log.d("post", "$it")
+                    postedImageList.add(PostData(it.toString()))
+                }.addOnCompleteListener {
+                    //recyclerview.adapter = ItemsAdapter(this, showAdviceList)
+                    //recyclerview.layoutManager = LinearLayoutManager(this)
+                }
+
+            }
+
+        }
+
+    }
+}
+
 
 
 

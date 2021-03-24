@@ -3,14 +3,16 @@ package com.example.adviceapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 class ItemsAdapter(
 
        // private var imageUri: HomePage = null,
         private val context: HomePage,
-        private val adviceList: List<PostData>) : RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
+        private val adviceList: MutableList<PostData>) : RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)
 
@@ -25,19 +27,15 @@ class ItemsAdapter(
 
         val advice = adviceList[position]
 
-
         val adviceTitle = advice.title
         val adviceDescription = advice.description
-        //val imageHolder = advice.imageUrl
+        val imageHolder = advice.imageUrl
         holder.titleText.text = adviceTitle
         holder.descriptionText.text = adviceDescription
 
-        //Picasso.get().load(imageUri).into(holder.recyclerviewImage)
+        println(imageHolder)
 
-
-
-
-
+        Picasso.get().load(imageHolder).into(holder.uploadedImage)
 
         /* Bra videolänk för att använda Glide (Kollat på tidigare)
          //https://www.youtube.com/watch?v=EmomJDgR7UQ&t=103s&ab_channel=RahulPandey
@@ -45,12 +43,10 @@ class ItemsAdapter(
 
     }
 
-
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.title_text)
         val descriptionText: TextView = itemView.findViewById(R.id.description_text)
-        //val recyclerviewImage : ImageView = itemView.findViewById(R.id.item_image)
-
+        val uploadedImage : ImageView = itemView.findViewById(R.id.uploaded_image)
     }
 
 }

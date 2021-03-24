@@ -7,19 +7,22 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.advice_card.*
 import java.util.*
+
 
 class HomePage : AppCompatActivity() {
 
     lateinit var db: FirebaseFirestore
     private var adviceList = mutableListOf<PostData>()
     private var showAdviceList = mutableListOf<PostData>() // Empty list with no data
-
+   // private var favoriteList = mutableListOf<PostData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +48,7 @@ class HomePage : AppCompatActivity() {
         adviceRef.get().addOnSuccessListener { documentSnapshot ->
             for (document in documentSnapshot.documents) {
                 val advice =  document.toObject(PostData::class.java)
-                if (advice  != null)
+                if (advice != null)
                     adviceList.add(advice)
                 if (advice != null) {
                     showAdviceList.add(advice)
@@ -53,15 +56,42 @@ class HomePage : AppCompatActivity() {
             }
             adapter.notifyDataSetChanged()
         }
-        println("!!! GOT DATA ${adviceList}")
+        //println("!!! GOT DATA ${adviceList}")
 
 
-
-        val fab = findViewById<View>(R.id.floatingActionButton)
+        val fab = findViewById<View>(R.id.add)
         fab.setOnClickListener{
+            Toast.makeText(this, "Clicked on Add item", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, PostItem::class.java)
             startActivity(intent)
         }
+
+        val fab2 = findViewById<View>(R.id.favorite)
+        fab2.setOnClickListener {
+
+            //addedFavorites()
+            //Toast.makeText(this, "Clicked on Favorites ", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, Favorites::class.java)
+            startActivity(intent)
+
+             /* Video till hur man gör en cool expandable floating action button
+            https://www.youtube.com/watch?v=umCX1-Tq25k&ab_channel=Stevdza-San
+            https://www.youtube.com/watch?v=0AlquC1rScQ&ab_channel=AndroidWorldClub  */
+        }
+
+        /*add_favorite.setOnCheckedChangeListener { checkBox, isChecked ->
+
+            if (isChecked) {
+
+                Toast.makeText(this, "ADDED", Toast.LENGTH_LONG).show()
+
+            } else {
+
+                Toast.makeText(this, "DELETED", Toast.LENGTH_LONG).show()
+            }
+
+        }
+         */
 
     }
 
@@ -117,6 +147,7 @@ class HomePage : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
     }
+
 }
 
 
