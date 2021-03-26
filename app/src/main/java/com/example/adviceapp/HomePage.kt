@@ -7,19 +7,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.advice_card.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class HomePage : AppCompatActivity() {
 
-    lateinit var db: FirebaseFirestore
+    private lateinit var db: FirebaseFirestore
     private var adviceList = mutableListOf<PostData>()
     private var showAdviceList = mutableListOf<PostData>() // Empty list with no data
    // private var favoriteList = mutableListOf<PostData>()
@@ -59,9 +58,53 @@ class HomePage : AppCompatActivity() {
         //println("!!! GOT DATA ${adviceList}")
 
 
+        /*
+
+        fun bubbleSortAdvices(showAdviceList: ArrayList<String>): ArrayList<String> {
+
+            var swap = true
+
+            var letters = arrayOf("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","å","ä","ö")
+
+            var changes = 0
+
+            while (swap) {
+
+                swap = false
+
+                for (i in 0 until showAdviceList.size -1 ) {
+
+                    changes ++
+
+                    val wordToCheck = showAdviceList[i]
+                    val nextWord = showAdviceList[i+1]
+                    val first = wordToCheck.substring(0,1)
+                    val second = nextWord.substring(0,1)
+                    val firstWord = letters.indexOf(first.toLowerCase())
+                    val secondWord = letters.indexOf(second.toLowerCase())
+
+                    if (firstWord > secondWord ) {
+                        val temp = showAdviceList[i]
+                        showAdviceList[i] = showAdviceList[i + 1]
+                        showAdviceList[i + 1 ] = temp
+                        swap = true
+                    }
+
+                }
+
+            }
+
+            return showAdviceList
+
+        }
+
+        bubbleSortAdvices(showAdviceList)
+         */
+
+
         val fab = findViewById<View>(R.id.add)
         fab.setOnClickListener{
-            Toast.makeText(this, "Clicked on Add item", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Clicked on Add item", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, PostItem::class.java)
             startActivity(intent)
         }

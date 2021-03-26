@@ -95,7 +95,6 @@ class PostItem : AppCompatActivity() {
          */
 
 
-
         val imageURL = finalImageURL;
         val decribeInput = describe_title.text.toString()
         val descriptionInput = description_title.text.toString()
@@ -110,6 +109,7 @@ class PostItem : AppCompatActivity() {
             val advice = PostData(decribeInput, descriptionInput,imageURL)
             db.collection("advice").add(advice)
             toFirstPage()
+
 
             /*  if you changes rules add this to be able to read and write (user can see added data to Firebase)
             allow read, write: if request.time < timestamp.date(2020, 9, 2) */
@@ -193,7 +193,7 @@ class PostItem : AppCompatActivity() {
         val baos = ByteArrayOutputStream()
         val storageImage = FirebaseStorage.getInstance()
                 .reference
-                .child("MinNyaBild/")
+                .child("MinBild${System.currentTimeMillis()}")
 
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val image = baos.toByteArray()
@@ -211,7 +211,7 @@ class PostItem : AppCompatActivity() {
                         var theIMGURI = it;
 
                         finalImageURL = theIMGURI.toString();
-                        println("???" + theIMGURI)
+                        //println("???" + theIMGURI)
 
 
 
