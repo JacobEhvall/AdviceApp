@@ -56,7 +56,7 @@
             android:layout_height="50dp"
             android:background="@android:color/transparent"
             android:buttonTint="@color/red"
-            android:button="@drawable/add_favorite"
+            android:button="@drawable/selector_add_favorite_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

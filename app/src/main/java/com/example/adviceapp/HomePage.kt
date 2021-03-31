@@ -7,20 +7,22 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_post_item.*
+import kotlinx.android.synthetic.main.advice_card.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class HomePage : AppCompatActivity() {
 
     private lateinit var db: FirebaseFirestore
     private var adviceList = mutableListOf<PostData>()
-    private var showAdviceList = mutableListOf<PostData>() // Empty list with no data
+    private var showAdviceList = mutableListOf<PostData>() // Add all data to this empty list no data
    // private var favoriteList = mutableListOf<PostData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +34,20 @@ class HomePage : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         // add everything from adviceList to our new empty list showAdviceList
 
+
+        /*add_favorite.setOnCheckedChangeListener { checkBox, isChecked ->
+
+            if (isChecked) {
+
+                showToast("ADDED TO LIST")
+
+            } else {
+
+               showToast("DELETED FROM  LIST")
+            }
+
+        }
+         */
 
 
         /* This is the adapter that binds the data together */
@@ -46,59 +62,48 @@ class HomePage : AppCompatActivity() {
         val adviceRef = db.collection("advice")
         adviceRef.get().addOnSuccessListener { documentSnapshot ->
             for (document in documentSnapshot.documents) {
-                val advice =  document.toObject(PostData::class.java)
+                val advice = document.toObject(PostData::class.java)
                 if (advice != null)
                     adviceList.add(advice)
                 if (advice != null) {
+                    //advice.documentId = document.id  save to later if you got time
+                    //println("!!!!" + document) //get documents printed from Firebase
                     showAdviceList.add(advice)
+
                 }
             }
-            adapter.notifyDataSetChanged()
+
+
+
+            // Här skriver vi ut listan innan den sorteras
+            println("!!! ________SORTERAR___________ ")
+            for(t in adviceList) { println("!!! "+t) }
+
+
+
+
+            // HÄR GÖR VI SORTERINGEN
+            showAdviceList = bubbleSortAdvices(showAdviceList)
+
+
+            // Här skriver vi ut resultatet av den sorterade listan
+            println("!!!___________ ")
+            for(t in showAdviceList) { println("!!! "+t) }
+
+           adapter.notifyDataSetChanged()
+
         }
         //println("!!! GOT DATA ${adviceList}")
 
+        /*add_favorite.setOnCheckedChangeListener { CheckBox, isChecked ->
 
-        /*
-
-        fun bubbleSortAdvices(showAdviceList: ArrayList<String>): ArrayList<String> {
-
-            var swap = true
-
-            var letters = arrayOf("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","å","ä","ö")
-
-            var changes = 0
-
-            while (swap) {
-
-                swap = false
-
-                for (i in 0 until showAdviceList.size -1 ) {
-
-                    changes ++
-
-                    val wordToCheck = showAdviceList[i]
-                    val nextWord = showAdviceList[i+1]
-                    val first = wordToCheck.substring(0,1)
-                    val second = nextWord.substring(0,1)
-                    val firstWord = letters.indexOf(first.toLowerCase())
-                    val secondWord = letters.indexOf(second.toLowerCase())
-
-                    if (firstWord > secondWord ) {
-                        val temp = showAdviceList[i]
-                        showAdviceList[i] = showAdviceList[i + 1]
-                        showAdviceList[i + 1 ] = temp
-                        swap = true
-                    }
-
-                }
-
+            if (isChecked) {
+                Toast.makeText(this, "ADDED", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "DELETED", Toast.LENGTH_SHORT).show()
             }
-
-            return showAdviceList
-
         }
-
-        bubbleSortAdvices(showAdviceList)
+        
          */
 
 
@@ -122,19 +127,6 @@ class HomePage : AppCompatActivity() {
             https://www.youtube.com/watch?v=0AlquC1rScQ&ab_channel=AndroidWorldClub  */
         }
 
-        /*add_favorite.setOnCheckedChangeListener { checkBox, isChecked ->
-
-            if (isChecked) {
-
-                Toast.makeText(this, "ADDED", Toast.LENGTH_LONG).show()
-
-            } else {
-
-                Toast.makeText(this, "DELETED", Toast.LENGTH_LONG).show()
-            }
-
-        }
-         */
 
     }
 
@@ -189,6 +181,51 @@ class HomePage : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showToast(str: String) {
+        Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun bubbleSortAdvices(showAdviceList: MutableList<PostData> ): MutableList<PostData> {
+
+        var swap = true
+
+        var letters = arrayOf("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","å","ä","ö")
+
+        var changes = 0
+
+        while (swap) {
+
+            swap = false
+
+            for (i in 0 until showAdviceList.size -1 ) {
+
+                changes ++
+
+                val wordToCheck = showAdviceList[i].title.toString()
+                val nextWord = showAdviceList[i+1].title.toString()
+                val first = wordToCheck.substring(0,1)
+                val second = nextWord.substring(0,1)
+                val firstWord = letters.indexOf(first.toLowerCase())
+                val secondWord = letters.indexOf(second.toLowerCase())
+
+                if (firstWord > secondWord ) {
+                    val temp = showAdviceList[i]
+                    showAdviceList[i] = showAdviceList[i + 1]
+                    showAdviceList[i + 1 ] = temp
+                    swap = true
+                }
+
+            }
+
+
+        }
+
+        print("!!! Sorterad");
+
+        return showAdviceList
+
     }
 
 }

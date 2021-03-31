@@ -1,10 +1,12 @@
 package com.example.adviceapp
 
+import android.widget.CheckBox
+
 data class PostData(
-        //var id: String? = null,
         var title: String? = null,
         var description: String? = null,
-        var imageUrl : String? = null
+        var imageUrl: String? = null,
+        var documentId: String? = null
 
 )
 

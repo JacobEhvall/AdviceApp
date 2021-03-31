@@ -3,8 +3,10 @@ package com.example.adviceapp
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
@@ -33,6 +35,7 @@ class ItemsAdapter(
         holder.titleText.text = adviceTitle
         holder.descriptionText.text = adviceDescription
 
+
         println(imageHolder)
 
         Picasso.get().load(imageHolder).into(holder.uploadedImage)
@@ -47,6 +50,7 @@ class ItemsAdapter(
         val titleText: TextView = itemView.findViewById(R.id.title_text)
         val descriptionText: TextView = itemView.findViewById(R.id.description_text)
         val uploadedImage : ImageView = itemView.findViewById(R.id.uploaded_image)
+        var favoriteButton : CheckBox = itemView.findViewById(R.id.add_favorite)
     }
 
 }

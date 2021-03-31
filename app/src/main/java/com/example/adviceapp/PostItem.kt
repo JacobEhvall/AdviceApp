@@ -15,14 +15,12 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.tasks.Task
 //import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_post_item.*
 import java.io.ByteArrayOutputStream
 
@@ -31,8 +29,6 @@ class PostItem : AppCompatActivity() {
     private lateinit var context: Context
     lateinit var db: FirebaseFirestore
     var finalImageURL = "test";
-
-    private var showAdviceList = mutableListOf<PostData>()
 
 
     companion object {
@@ -106,7 +102,7 @@ class PostItem : AppCompatActivity() {
 
         } else {
             // TODO maybe rename PostData to AdviceData?
-            val advice = PostData(decribeInput, descriptionInput,imageURL)
+            val advice = PostData(decribeInput, descriptionInput,imageURL  )
             db.collection("advice").add(advice)
             toFirstPage()
 
