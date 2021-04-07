@@ -50,7 +50,6 @@ class ItemsAdapter(
         val titleText: TextView = itemView.findViewById(R.id.title_text)
         val descriptionText: TextView = itemView.findViewById(R.id.description_text)
         val uploadedImage : ImageView = itemView.findViewById(R.id.uploaded_image)
-        var favoriteButton : CheckBox = itemView.findViewById(R.id.add_favorite)
     }
 
 }

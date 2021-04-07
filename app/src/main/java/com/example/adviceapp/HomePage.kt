@@ -35,20 +35,6 @@ class HomePage : AppCompatActivity() {
         // add everything from adviceList to our new empty list showAdviceList
 
 
-        /*add_favorite.setOnCheckedChangeListener { checkBox, isChecked ->
-
-            if (isChecked) {
-
-                showToast("ADDED TO LIST")
-
-            } else {
-
-               showToast("DELETED FROM  LIST")
-            }
-
-        }
-         */
-
 
         /* This is the adapter that binds the data together */
         val adapter = ItemsAdapter(this, showAdviceList)
@@ -95,37 +81,20 @@ class HomePage : AppCompatActivity() {
         }
         //println("!!! GOT DATA ${adviceList}")
 
-        /*add_favorite.setOnCheckedChangeListener { CheckBox, isChecked ->
 
-            if (isChecked) {
-                Toast.makeText(this, "ADDED", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "DELETED", Toast.LENGTH_SHORT).show()
-            }
-        }
-        
-         */
 
 
         val fab = findViewById<View>(R.id.add)
         fab.setOnClickListener{
-            //Toast.makeText(this, "Clicked on Add item", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, PostItem::class.java)
             startActivity(intent)
         }
 
-        val fab2 = findViewById<View>(R.id.favorite)
-        fab2.setOnClickListener {
-
-            //addedFavorites()
-            //Toast.makeText(this, "Clicked on Favorites ", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, Favorites::class.java)
-            startActivity(intent)
 
              /* Video till hur man gör en cool expandable floating action button
             https://www.youtube.com/watch?v=umCX1-Tq25k&ab_channel=Stevdza-San
             https://www.youtube.com/watch?v=0AlquC1rScQ&ab_channel=AndroidWorldClub  */
-        }
+
 
 
     }
@@ -181,10 +150,6 @@ class HomePage : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun showToast(str: String) {
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show()
     }
 
     private fun bubbleSortAdvices(showAdviceList: MutableList<PostData> ): MutableList<PostData> {
