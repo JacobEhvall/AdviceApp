@@ -13,12 +13,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AdviceApp"
-        tools:ignore="ExtraText">
-        <activity android:name=".Favorites"></activity>
+        android:theme="@style/Theme.AdviceApp">
+        <activity
+            android:name=".SignUp"
+            android:parentActivityName=".HomePage"/>
         <activity android:name=".PostItem" />
-        <activity android:name=".HomePage">
-            <intent-filter>
+        <activity android:name=".HomePage"
+        android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".LogInScreen" >
+        <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

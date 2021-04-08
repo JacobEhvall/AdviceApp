@@ -6,11 +6,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_post_item.*
@@ -21,19 +24,16 @@ import java.util.*
 class HomePage : AppCompatActivity() {
 
     private lateinit var db: FirebaseFirestore
+    lateinit var auth: FirebaseAuth
     private var adviceList = mutableListOf<PostData>()
     private var showAdviceList = mutableListOf<PostData>() // Add all data to this empty list no data
-   // private var favoriteList = mutableListOf<PostData>()
+    private var uid = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
-        /* Connect and get data from Firebase  */
         db = FirebaseFirestore.getInstance()
-        // add everything from adviceList to our new empty list showAdviceList
-
+        auth = FirebaseAuth.getInstance()
 
 
         /* This is the adapter that binds the data together */
@@ -41,6 +41,13 @@ class HomePage : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
+
+        val currentUser: FirebaseUser? = auth.currentUser
+
+        if (currentUser != null) {
+            uid = auth.currentUser!!.uid
+        }
+
 
 
         /* Listen to the Firebase collection and display data inside recyclerview */
@@ -60,12 +67,9 @@ class HomePage : AppCompatActivity() {
             }
 
 
-
             // Här skriver vi ut listan innan den sorteras
             println("!!! ________SORTERAR___________ ")
             for(t in adviceList) { println("!!! "+t) }
-
-
 
 
             // HÄR GÖR VI SORTERINGEN
@@ -82,8 +86,6 @@ class HomePage : AppCompatActivity() {
         //println("!!! GOT DATA ${adviceList}")
 
 
-
-
         val fab = findViewById<View>(R.id.add)
         fab.setOnClickListener{
             val intent = Intent(this, PostItem::class.java)
@@ -95,16 +97,13 @@ class HomePage : AppCompatActivity() {
             https://www.youtube.com/watch?v=umCX1-Tq25k&ab_channel=Stevdza-San
             https://www.youtube.com/watch?v=0AlquC1rScQ&ab_channel=AndroidWorldClub  */
 
-
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
         menuInflater.inflate(R.menu.menu, menu)
         val menuItem = menu!!.findItem(R.id.search)
 
-        if ( menuItem!= null ) {
+        if ( menuItem!= null) {
 
             val searchResult = menuItem.actionView as SearchView
             searchResult.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -149,8 +148,21 @@ class HomePage : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.sign_out) {
+            logOut()
+            Toast.makeText(this, "Signed Out", Toast.LENGTH_SHORT ).show()
+
+        }
         return super.onOptionsItemSelected(item)
     }
+
+
+    private fun logOut() {
+        auth.signOut()
+        val intent = Intent(this, LogInScreen::class.java )
+        startActivity(intent)
+    }
+
 
     private fun bubbleSortAdvices(showAdviceList: MutableList<PostData> ): MutableList<PostData> {
 
@@ -192,7 +204,6 @@ class HomePage : AppCompatActivity() {
         return showAdviceList
 
     }
-
 }
 
 

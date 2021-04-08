@@ -1,4 +1,11 @@
 package com.example.adviceapp
 
-class UserData {
-}
+data class UserData (
+
+    var email : String?  = null,
+    var password : String?  = null
+)
+
+
+
+

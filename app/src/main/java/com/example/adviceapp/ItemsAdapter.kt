@@ -12,7 +12,6 @@ import com.squareup.picasso.Picasso
 
 class ItemsAdapter(
 
-       // private var imageUri: HomePage = null,
         private val context: HomePage,
         private val adviceList: MutableList<PostData>) : RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
 
