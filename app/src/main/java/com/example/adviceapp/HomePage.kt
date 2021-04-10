@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,10 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_post_item.*
-import kotlinx.android.synthetic.main.advice_card.*
 import java.util.*
-
 
 class HomePage : AppCompatActivity() {
 
@@ -80,7 +76,7 @@ class HomePage : AppCompatActivity() {
             println("!!!___________ ")
             for(t in showAdviceList) { println("!!! "+t) }
 
-           adapter.notifyDataSetChanged()
+            adapter.notifyDataSetChanged()
 
         }
         //println("!!! GOT DATA ${adviceList}")
@@ -93,9 +89,9 @@ class HomePage : AppCompatActivity() {
         }
 
 
-             /* Video till hur man gör en cool expandable floating action button
-            https://www.youtube.com/watch?v=umCX1-Tq25k&ab_channel=Stevdza-San
-            https://www.youtube.com/watch?v=0AlquC1rScQ&ab_channel=AndroidWorldClub  */
+        /* Video till hur man gör en cool expandable floating action button
+       https://www.youtube.com/watch?v=umCX1-Tq25k&ab_channel=Stevdza-San
+       https://www.youtube.com/watch?v=0AlquC1rScQ&ab_channel=AndroidWorldClub  */
 
     }
 
@@ -205,31 +201,6 @@ class HomePage : AppCompatActivity() {
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

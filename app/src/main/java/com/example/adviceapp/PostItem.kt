@@ -86,16 +86,9 @@ class PostItem : AppCompatActivity() {
 
     private fun addPost() {
 
-        /* TODO When we post the text we also want the image together white the text
-            to be posted that´s sets a Bitmap as the content of this ImageView why we also what to declare the image in the "addPost" function.
-         */
-
-
         val imageURL = finalImageURL;
         val decribeInput = describe_title.text.toString()
         val descriptionInput = description_title.text.toString()
-
-        // TODO We can specify an error message in here instead of regular Toast!
 
         if (decribeInput.isEmpty() || descriptionInput.isEmpty()) {
             Toast.makeText(applicationContext, "No empty fields allowed", Toast.LENGTH_LONG).show()
@@ -210,9 +203,6 @@ class PostItem : AppCompatActivity() {
                         //println("???" + theIMGURI)
 
 
-
-
-
                         // ""theIMGURI"""  skickar du upp med själva inlägget till databasen som en vanlig sträng
                         // Här nere kan du nu göra själva requested till databasen för Posten
                         //  ulpoadThePost();
@@ -223,13 +213,6 @@ class PostItem : AppCompatActivity() {
                 }
             }
         }
-
-
-        // Uri.fromFile(imageUri.toFile())
-        // Picasso.with(context).load(imageUri).resize(100, 100).centerCrop().into(item_image)
-        //storageImage.child("home/").putFile(imageUri).addOnCompleteListener {
-        //storageImage.child("home/").downloadUrl
-
 
     }
 
@@ -247,9 +230,6 @@ class PostItem : AppCompatActivity() {
                 item.downloadUrl.addOnSuccessListener {
                     Log.d("post", "$it")
                     postedImageList.add(PostData(it.toString()))
-                }.addOnCompleteListener {
-                    //recyclerview.adapter = ItemsAdapter(this, showAdviceList)
-                    //recyclerview.layoutManager = LinearLayoutManager(this)
                 }
 
             }
@@ -258,76 +238,3 @@ class PostItem : AppCompatActivity() {
 
     }
 }
-
-
-
-
-
-
-
-/*
- @RequiresApi(Build.VERSION_CODES.M)
- private fun picturePermission() {
-     if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-         addPicture()
-         val permissions = arrayOf(Manifest.permission.CAMERA)
-         requestPermissions(permissions, CAMERA_REQUEST_CODE)
-     }
- }
- */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// imageUri = UUID.randomUUID().toString()
-
-
-/*
-val bmp = data?.extras?.get("data") as Bitmap
-add_image.setImageBitmap(bmp)
-val bitmap = (add_image.drawable as BitmapDrawable).bitmap
-val baos = ByteArrayOutputStream()
-bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos)
-val data = baos.toByteArray()
-*/
-
-
-// To be able to fit the image inside the imageview I think we have to crop the image
-
-
-// Check out 1:07:50 to see the croping
-
-
-
-/*
-if (requestCode == CAMERA_REQUEST_CODE && data!= null && resultCode == Activity.RESULT_OK) {
-imageUri = data.data.toString()
-add_image.setImageURI(Uri.parse(imageUri))
-}
-println("!!!${add_image}")
-}
-*/
-
-
-//val uri = data.data
-
-/*
-val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri)
-val bitmapImage = BitmapDrawable(bitmap)
-add_image.setBackgroundDrawable(bitmapImage)
-*/

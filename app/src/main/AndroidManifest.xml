@@ -19,9 +19,9 @@
             android:parentActivityName=".HomePage"/>
         <activity android:name=".PostItem" />
         <activity android:name=".HomePage"
-        android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".LogInScreen" >
-        <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />

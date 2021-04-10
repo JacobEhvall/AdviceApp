@@ -35,7 +35,7 @@ class LogInScreen : AppCompatActivity() {
             val userEmailInput = emailInput.text.toString()
             val userPasswordInput = passwordInput.text.toString()
 
-            UserLoggedInCheck(userEmailInput,userPasswordInput)
+            userLoggedInCheck(userEmailInput,userPasswordInput)
 
         }
 
@@ -66,11 +66,11 @@ class LogInScreen : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun UserLoggedInCheck(userEmailInput: String, userPasswordInput: String): Boolean {
+     fun userLoggedInCheck(userEmailInput: String, userPasswordInput: String): Boolean {
 
         if (userEmailInput == "" || userPasswordInput == "") {
 
-            Toast.makeText(this, "EMPTY FIELDS ARE NOT ALLOWED", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "EMPTY FIELDS ARE NOT ALLOWED", Toast.LENGTH_SHORT).show()
             return false
         } else {
             auth.signInWithEmailAndPassword(userEmailInput, userPasswordInput)
