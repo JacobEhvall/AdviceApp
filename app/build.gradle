@@ -8,6 +8,8 @@ plugins {
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
+    testOptions {    unitTests.returnDefaultValues = true  }
+
 
     defaultConfig {
         applicationId "com.example.adviceapp"
@@ -34,6 +36,18 @@ android {
     }
 }
 
+allprojects {
+   repositories {
+
+       maven { url 'https://jitpack.io'}
+       mavenCentral()
+
+
+    }
+
+}
+
+
 dependencies {
 
     // possible to add add save images to Firebase Storage
@@ -55,8 +69,16 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2')
+
     // Use jackson to cache the data
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.8.+'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3'
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
+
 
 
 }

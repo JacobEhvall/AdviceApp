@@ -11,31 +11,46 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.tasks.Task
-//import com.bumptech.glide.Glide
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
+import kotlinx.android.synthetic.main.activity_post_item.*
+import kotlinx.coroutines.*
+
+import androidx.lifecycle.Observer
+
+import kotlin.coroutines.coroutineContext
+import com.google.firebase.firestore.FirebaseFirestore
+
 import kotlinx.android.synthetic.main.activity_post_item.*
 import java.io.ByteArrayOutputStream
 
 class PostItem : AppCompatActivity() {
 
     private lateinit var context: Context
-    lateinit var db: FirebaseFirestore
-    var finalImageURL = "test";
+
 
     companion object {
 
         var CAMERA_PERMISSION = 123
         var CAMERA_REQUEST_CODE = 134
     }
+
+
+    private var finalImageURL = MutableLiveData<String>()
+
+    fun getFinalImageURL(): LiveData<String> {
+        return finalImageURL
+    }
+
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,15 +65,10 @@ class PostItem : AppCompatActivity() {
         postToRecyclerview()
 
 
-        db = FirebaseFirestore.getInstance()
-        //firebaseStore = FirebaseStorage.getInstance()
-
-
-        /* This button do we call to post the userInput for now,
-        but we want aswell the image to be posted! */
 
     }
 
+    // Listener on the image to go to the camera
     private fun selectImage() {
 
         add_image.setOnClickListener {
@@ -72,6 +82,7 @@ class PostItem : AppCompatActivity() {
     }
 
 
+    // Add the texts and the image to be displayed in the recyclerview
     private fun postToRecyclerview() {
 
         //TODO POST text and image!
@@ -84,9 +95,10 @@ class PostItem : AppCompatActivity() {
 
     }
 
+    // Post / add data to Firebase
     private fun addPost() {
 
-        val imageURL = finalImageURL;
+        val imageURL = finalImageURL.value.toString();
         val decribeInput = describe_title.text.toString()
         val descriptionInput = description_title.text.toString()
 
@@ -94,18 +106,14 @@ class PostItem : AppCompatActivity() {
             Toast.makeText(applicationContext, "No empty fields allowed", Toast.LENGTH_LONG).show()
 
         } else {
-            // TODO maybe rename PostData to AdviceData?
-            val advice = PostData(decribeInput, descriptionInput,imageURL  )
-            db.collection("advice").add(advice)
+
+
+            FirebaseData().PostAdviceData(decribeInput, descriptionInput, imageURL)
             toFirstPage()
 
 
-            /*  if you changes rules add this to be able to read and write (user can see added data to Firebase)
+            /*  To be able to add and post data, change the rules to:
             allow read, write: if request.time < timestamp.date(2020, 9, 2) */
-
-
-            /* Favorites list
-             https://stackoverflow.com/questions/62575483/favorite-list-with-firestore-in-android-studio-with-kotlin */
 
         }
 
@@ -148,6 +156,26 @@ class PostItem : AppCompatActivity() {
         startActivity(intent)
     }
 
+    private fun saveImageRecyclerview() {
+
+        val imageStorage = FirebaseStorage.getInstance()
+        val imageRef = imageStorage.reference.child("posts")
+        val postedImageList = mutableListOf<PostData>()
+
+        val listImages: Task<ListResult> = imageRef.listAll()
+        listImages.addOnCompleteListener { result ->
+            val images: List<StorageReference> = result.result!!.items
+            images.forEachIndexed { index, item ->
+                item.downloadUrl.addOnSuccessListener {
+                    Log.d("post", "$it")
+                    postedImageList.add(PostData(it.toString()))
+                }
+
+            }
+
+        }
+
+    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onRequestPermissionsResult(
@@ -171,45 +199,62 @@ class PostItem : AppCompatActivity() {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
 
+
+            // This is where we add the image to the image from camera simulator
+            add_image.setImageBitmap(imageBitmap)
+
+
             getAndSaveUri(imageBitmap)
 
+            //imageThread(imageBitmap)
+            println("!!! SATT BILD FRÅN KAMERA = ${imageBitmap}")
+
+
+           // println("___STEG 3____");
+
+
         }
+
 
     }
 
-
-    private fun getAndSaveUri(bitmap: Bitmap) {
-        val baos = ByteArrayOutputStream()
-        val storageImage = FirebaseStorage.getInstance()
-                .reference
-                .child("MinBild${System.currentTimeMillis()}")
-
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-        val image = baos.toByteArray()
-
-        val uploadToFirebase = storageImage.putBytes(image)
-
-        uploadToFirebase.addOnCompleteListener { uploadTask ->
-            if (uploadTask.isSuccessful) {
-                storageImage.downloadUrl.addOnCompleteListener { urlTask ->
-                    urlTask.result?.let {
-
-                        add_image.setImageBitmap(bitmap)
+     fun getAndSaveUri(bitmap: Bitmap) = runBlocking() {
 
 
-                        var theIMGURI = it;
-
-                        finalImageURL = theIMGURI.toString();
-                        //println("???" + theIMGURI)
+        launch {
 
 
-                        // ""theIMGURI"""  skickar du upp med själva inlägget till databasen som en vanlig sträng
-                        // Här nere kan du nu göra själva requested till databasen för Posten
-                        //  ulpoadThePost();
+            val baos = ByteArrayOutputStream()
+            val storageImage = FirebaseStorage.getInstance()
+                    .reference
+                    .child("MinBild${System.currentTimeMillis()}")
 
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val image = baos.toByteArray()
+
+            val uploadToFirebase = storageImage.putBytes(image)
+
+            uploadToFirebase.addOnCompleteListener { uploadTask ->
+                if (uploadTask.isSuccessful) {
+                    storageImage.downloadUrl.addOnCompleteListener { urlTask ->
+                        urlTask.result?.let {
+
+                            add_image.setImageBitmap(bitmap)
+
+                            var theIMGURI = it;
+
+                            finalImageURL.value = theIMGURI.toString();
+                            //println("???" + theIMGURI)
+
+
+                            // ""theIMGURI"""  skickar du upp med själva inlägget till databasen som en vanlig sträng
+                            // Här nere kan du nu göra själva requested till databasen för Posten
+                            //  ulpoadThePost();
+
+
+                        }
 
                     }
-
                 }
             }
         }
@@ -217,24 +262,52 @@ class PostItem : AppCompatActivity() {
     }
 
 
-    private fun saveImageRecyclerview() {
+       /* fun imageThread(bitmap: Bitmap) {
 
-        val imageStorage = FirebaseStorage.getInstance()
-        val imageRef = imageStorage.reference.child("posts")
-        val postedImageList = mutableListOf<PostData>()
 
-        val listImages: Task<ListResult> = imageRef.listAll()
-        listImages.addOnCompleteListener { result ->
-            val images: List<StorageReference> = result.result!!.items
-            images.forEachIndexed { index, item ->
-                item.downloadUrl.addOnSuccessListener {
-                    Log.d("post", "$it")
-                    postedImageList.add(PostData(it.toString()))
-                }
+           var theFire = FirebaseData();
 
-            }
+         theFire.getImageUrl(bitmap);
 
-        }
+
+         theFire.thefinalImageURL.observe(this, Observer {
+
+                finalImageURL.value = it.toString()
+                println("!!! the Image URL Uploaded::: ${it}")
+
+            })
+        */
+
+
+
+
+            ///add_image.setImageBitmap(bitmap)
+
+
+
+        // HAR INTE FIXAT ÄN, MEN HÄR LADDAR VI UPP BILDEN TILL FIREBASE :)
+
+
+        // Bättre att sätta bilden i denna klass och göra Firebase i Firebase klassen
+
+
+        //println("???" + theIMGURI)
+
+
+        // ""theIMGURI"""  skickar du upp med själva inlägget till databasen som en vanlig sträng
+        // Här nere kan du nu göra själva requested till databasen för Posten
+        //  ulpoadThePost();
 
     }
-}
+
+
+
+
+
+
+
+
+
+
+
+

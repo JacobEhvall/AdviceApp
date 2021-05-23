@@ -11,7 +11,7 @@ import com.squareup.picasso.Picasso
 class ItemsAdapter(
 
         private val context: HomePage,
-        private val adviceList: MutableList<PostData>) : RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
+        private var globalAdviceList: MutableList<PostData>) : RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
 
     private val layoutInflater = LayoutInflater.from(context)
 
@@ -20,11 +20,12 @@ class ItemsAdapter(
         return ViewHolder(itemView)
     }
 
-    override fun getItemCount() = adviceList.size
+
+    override fun getItemCount() = GlobalAdviceList.globalAdviceList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val advice = adviceList[position]
+        val advice = GlobalAdviceList.globalAdviceList[position]
 
         val adviceTitle = advice.title
         val adviceDescription = advice.description
@@ -33,13 +34,7 @@ class ItemsAdapter(
         holder.descriptionText.text = adviceDescription
 
 
-        println(imageHolder)
-
         Picasso.get().load(imageHolder).into(holder.uploadedImage)
-
-        /* Bra videolänk för att använda Glide (Kollat på tidigare)
-         //https://www.youtube.com/watch?v=EmomJDgR7UQ&t=103s&ab_channel=RahulPandey
-         */
 
     }
 

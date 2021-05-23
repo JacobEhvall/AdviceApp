@@ -2,13 +2,18 @@
 package com.example.adviceapp
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SearchView
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -17,27 +22,66 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-class HomePage : AppCompatActivity() {
+
+
+class HomePage() : AppCompatActivity(), java.util.Observer {
 
     private lateinit var db: FirebaseFirestore
     lateinit var auth: FirebaseAuth
-    private var adviceList = mutableListOf<PostData>()
-    private var showAdviceList = mutableListOf<PostData>() // Add all data to this empty list no data
+   // private var adviceList = mutableListOf<PostData>()
+    private var filteredAdviceList = mutableListOf<PostData>() // This one I use for filtering
+    private var adviceListAll = mutableListOf<PostData>() // Contains ALL loaded advice in the list
+
+    private var cacheDataList = mutableListOf<PostData>()
+    private var whichList = mutableListOf<PostData>()
+
     private var uid = ""
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
+        // Reference to the textview that display the useremail with livedata
+        val userEmail = findViewById<TextView>(R.id.display_name)
+
+        // viewmodel gets the data from the Model
+        val viewModel = ViewModelProvider(this).get(Model::class.java)
 
         /* This is the adapter that binds the data together */
-        val adapter = ItemsAdapter(this, showAdviceList)
+        var adapter = ItemsAdapter(this, filteredAdviceList)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
 
+
+
+        /* Check what kind of data we will get and display the list if internet or cache */
+
+        if (NetworkHandler.isOnline(this)) {
+
+            println("!!! hämtar från nätet!")
+            viewModel.getAdviceListData()
+            CacheData().cacheData()
+            whichList = GlobalAdviceList.globalAdviceList
+            Toast.makeText(this, "FIREBASE DATA", Toast.LENGTH_SHORT).show()
+
+        }
+        else {
+
+            println("!!! hämtar från cache!")
+            CacheData().getCachedData()
+
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager = LinearLayoutManager(this)
+            adapter.notifyDataSetChanged()
+
+            whichList = GlobalAdviceList.globalAdviceList
+            Toast.makeText(this, "CACHE DATA", Toast.LENGTH_SHORT).show()
+        }
+
+
+        // Check the user and set the user
         val currentUser: FirebaseUser? = auth.currentUser
 
         if (currentUser != null) {
@@ -45,56 +89,76 @@ class HomePage : AppCompatActivity() {
         }
 
 
+        // Set the useremail to the textview from the Model class
+        viewModel.getFirebaseData(uid)
 
-        /* Listen to the Firebase collection and display data inside recyclerview */
-        db = FirebaseFirestore.getInstance()
-        val adviceRef = db.collection("advice")
-        adviceRef.get().addOnSuccessListener { documentSnapshot ->
-            for (document in documentSnapshot.documents) {
-                val advice = document.toObject(PostData::class.java)
-                if (advice != null)
-                    adviceList.add(advice)
-                if (advice != null) {
-                    //advice.documentId = document.id  save to later if you got time
-                    //println("!!!!" + document) //get documents printed from Firebase
-                    showAdviceList.add(advice)
 
-                }
-            }
+        // Clear the list so nothing gets populated
+        GlobalAdviceList.globalAdviceList.clear()
 
+        // Get the list and from the viewModel and observe the changes 
+        viewModel.getAdviceList().observe(this, Observer {
+
+
+            // We set the list that we add data to and do a Bubblesort the list from a Bubblesort algoritm
+            GlobalAdviceList.globalAdviceList = bubbleSortAdvices(GlobalAdviceList.globalAdviceList)
+
+            // We clear the list results from both lists
+            filteredAdviceList.clear() // Filtered data
+            adviceListAll.clear() // Firebase data
+
+            // We add the data to both the filtered data and the Firebase data list
+            filteredAdviceList.addAll(GlobalAdviceList.globalAdviceList)
+            adviceListAll.addAll(GlobalAdviceList.globalAdviceList)
+
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager = LinearLayoutManager(this)
+            adapter.notifyDataSetChanged()
+
+        })
+
+        // We observe the data that we get from viewmodel that gets the data from Model class
+        viewModel.userEmail().observe(this, Observer {
+
+            // We set the text from the textview reference
+            userEmail.text = it.toString()
+
+        })
+
+
+        // This is where we observe the textfield value ones it gets changed
+        FirebaseData().userEmail.observe(this, Observer {
+            userEmail.text = it.toString()
+            println("!!! USER ${it}")
+
+        })
 
             // Här skriver vi ut listan innan den sorteras
             println("!!! ________SORTERAR___________ ")
-            for(t in adviceList) { println("!!! "+t) }
+            for(t in GlobalAdviceList.globalAdviceList) { println("!!! "+t) }
 
-
-            // HÄR GÖR VI SORTERINGEN
-            showAdviceList = bubbleSortAdvices(showAdviceList)
 
 
             // Här skriver vi ut resultatet av den sorterade listan
             println("!!!___________ ")
-            for(t in showAdviceList) { println("!!! "+t) }
+            for(t in filteredAdviceList) { println("!!! "+t) }
 
             adapter.notifyDataSetChanged()
 
-        }
-        //println("!!! GOT DATA ${adviceList}")
 
-
+        // The fab plus button brings us to the next page
         val fab = findViewById<View>(R.id.add)
         fab.setOnClickListener{
             val intent = Intent(this, PostItem::class.java)
             startActivity(intent)
+
+
         }
 
 
-        /* Video till hur man gör en cool expandable floating action button
-       https://www.youtube.com/watch?v=umCX1-Tq25k&ab_channel=Stevdza-San
-       https://www.youtube.com/watch?v=0AlquC1rScQ&ab_channel=AndroidWorldClub  */
-
     }
 
+    // The is where the filtering of the data gets started
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
         val menuItem = menu!!.findItem(R.id.search)
@@ -108,26 +172,35 @@ class HomePage : AppCompatActivity() {
                     return true
                 }
 
-
+                // Ones the user starts to enter a value the results will show
                 override fun onQueryTextChange(newText: String?): Boolean {
+
+                    println("!!! filtrerar på:"+newText)
+
 
                     if (newText!!.isNotEmpty()) {
 
-                        showAdviceList.clear()
+                        filteredAdviceList.clear()
                         val searchfield = newText.toLowerCase(Locale.getDefault())
-                        adviceList.forEach {
+                        GlobalAdviceList.globalAdviceList.forEach {
+
+                            println("the value:"+it)
 
                             if (it.title?.toLowerCase(Locale.getDefault())!!.contains(searchfield)) {
-                                showAdviceList.add(it)
+                                filteredAdviceList.add(it)
                             }
                         }
+                        GlobalAdviceList.globalAdviceList.clear()
+                        GlobalAdviceList.globalAdviceList.addAll(filteredAdviceList)
 
                         recyclerview.adapter!!.notifyDataSetChanged()
 
                     } else {
 
-                        showAdviceList.clear()
-                        showAdviceList.addAll(adviceList)
+                        filteredAdviceList.clear()
+
+                        GlobalAdviceList.globalAdviceList.clear()
+                        GlobalAdviceList.globalAdviceList.addAll(adviceListAll)
                         recyclerview.adapter?.notifyDataSetChanged()
 
                     }
@@ -143,6 +216,7 @@ class HomePage : AppCompatActivity() {
 
     }
 
+    //  When the user signout button gets pressed the signout function will be started
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.sign_out) {
             logOut()
@@ -152,7 +226,7 @@ class HomePage : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-
+    // Log out the current logged in user
     private fun logOut() {
         auth.signOut()
         val intent = Intent(this, LogInScreen::class.java )
@@ -160,6 +234,8 @@ class HomePage : AppCompatActivity() {
     }
 
 
+    /* The Bubblesort algoritm that sorts the posted data to be displayed in alphabetical order.
+     It goes through every index in the posted word that gets posted to Firebase. */
     private fun bubbleSortAdvices(showAdviceList: MutableList<PostData> ): MutableList<PostData> {
 
         var swap = true
@@ -195,11 +271,13 @@ class HomePage : AppCompatActivity() {
 
         }
 
-        print("!!! Sorterad");
-
         return showAdviceList
 
     }
+
+    override fun update(arg0: Observable?, arg: Any?) {
+    }
+
 }
 
 

@@ -9,11 +9,10 @@
 
   <TextView
       android:id="@+id/display_name"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:layout_width="155dp"
+      android:layout_height="31dp"
       android:layout_marginTop="10dp"
       android:layout_marginBottom="10dp"
-      android:text="Inloggad som: Jacob"
       android:textAlignment="center"
       app:layout_constraintBottom_toTopOf="@+id/recyclerview"
       app:layout_constraintEnd_toEndOf="parent"
