@@ -1,25 +1,25 @@
-package com.example.adviceapp
+package com.example.adviceapp.Model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
+import com.example.adviceapp.Controller.PostData
+import com.example.adviceapp.Controller.UserData
+import com.example.adviceapp.model.GlobalAdviceList
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.ArrayList
 
 class Model : ViewModel () {
 
     //lateinit var db : FirebaseFirestore
     private var jsonStr = ""
-    private val cacheKeys = mutableListOf<String>()
     private var cacheAdviceList = mutableListOf<PostData>()
-    private var cachedAdvicesJson = mutableListOf<String>()
-    private val cache = Lrucache<String>(8)
+    private val cache = Lrucache<String, String>(8)
 
 
     lateinit var db: FirebaseFirestore
+    val mapper = jacksonObjectMapper()
+
 
 
     private val _userEmail = MutableLiveData<String>()
@@ -56,19 +56,27 @@ class Model : ViewModel () {
         db = FirebaseFirestore.getInstance()
         val docRef = db.collection("advice")
         docRef.addSnapshotListener { snapshot, e ->
-            //GlobalAdviceList.globalAdviceList.clear()
             if (snapshot != null) {
+                var cacheKey = 1
                 for (document in snapshot.documents) {
                     val advice = document.toObject(PostData::class.java)
                     if (advice != null) {
                         adviceList.value = advice
                         GlobalAdviceList.globalAdviceList.add(advice)
-                        println("!!! vi fick datan!" + advice.toString())
+                        val cacheAdvice = advice.title.toString()
+                        cacheKey ++
+
+                        mapper.writeValueAsString(cacheAdvice)
+                        cache.put("1", cacheAdvice)
+                        println("+++"+cacheAdvice)
+
+                        jsonStr = mapper.writeValueAsString(cacheAdvice)
+                        cache.put(cacheKey.toString(), jsonStr)
+                        //println("!!! vi fick datan!" + advice.toString())
                     }
-
-
-
+                    cacheKey++
                 }
+
 
             }
 

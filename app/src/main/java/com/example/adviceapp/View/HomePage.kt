@@ -1,6 +1,7 @@
 
-package com.example.adviceapp
+package com.example.adviceapp.View
 
+import com.example.adviceapp.Model.Lrucache
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -16,9 +17,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.adviceapp.Model.Model
+import com.example.adviceapp.Controller.PostData
+import com.example.adviceapp.Model.FirebaseData
+import com.example.adviceapp.R
+import com.example.adviceapp.model.GlobalAdviceList
+import com.example.adviceapp.model.NetworkHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.NetworkPolicy
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -32,8 +41,10 @@ class HomePage() : AppCompatActivity(), java.util.Observer {
     private var filteredAdviceList = mutableListOf<PostData>() // This one I use for filtering
     private var adviceListAll = mutableListOf<PostData>() // Contains ALL loaded advice in the list
 
-    private var cacheDataList = mutableListOf<PostData>()
+    private var cachedDataList = mutableListOf<PostData>()
     private var whichList = mutableListOf<PostData>()
+    private val cache = Lrucache<String,String>(8)
+
 
     private var uid = ""
 
@@ -43,6 +54,7 @@ class HomePage() : AppCompatActivity(), java.util.Observer {
         setContentView(R.layout.activity_main)
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+
 
         // Reference to the textview that display the useremail with livedata
         val userEmail = findViewById<TextView>(R.id.display_name)
@@ -62,24 +74,20 @@ class HomePage() : AppCompatActivity(), java.util.Observer {
 
             println("!!! hämtar från nätet!")
             viewModel.getAdviceListData()
-            CacheData().cacheData()
-            whichList = GlobalAdviceList.globalAdviceList
+            //CacheData().cacheData()
+            whichList = GlobalAdviceList.globalAdviceList // Internet data, data ska cache:as
             Toast.makeText(this, "FIREBASE DATA", Toast.LENGTH_SHORT).show()
 
         }
         else {
 
             println("!!! hämtar från cache!")
-            CacheData().getCachedData()
 
-            recyclerView.adapter = adapter
-            recyclerView.layoutManager = LinearLayoutManager(this)
-            adapter.notifyDataSetChanged()
 
-            whichList = GlobalAdviceList.globalAdviceList
+            println("---"+ GlobalAdviceList.globalAdviceList)
+
             Toast.makeText(this, "CACHE DATA", Toast.LENGTH_SHORT).show()
         }
-
 
         // Check the user and set the user
         val currentUser: FirebaseUser? = auth.currentUser
@@ -87,6 +95,10 @@ class HomePage() : AppCompatActivity(), java.util.Observer {
         if (currentUser != null) {
             uid = auth.currentUser!!.uid
         }
+
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        adapter.notifyDataSetChanged()
 
 
         // Set the useremail to the textview from the Model class
@@ -107,7 +119,8 @@ class HomePage() : AppCompatActivity(), java.util.Observer {
             filteredAdviceList.clear() // Filtered data
             adviceListAll.clear() // Firebase data
 
-            // We add the data to both the filtered data and the Firebase data list
+            // We add the all data to an filtered list and the list to display all the content
+            // the its possible to show every advice and filtering on them
             filteredAdviceList.addAll(GlobalAdviceList.globalAdviceList)
             adviceListAll.addAll(GlobalAdviceList.globalAdviceList)
 
@@ -134,13 +147,13 @@ class HomePage() : AppCompatActivity(), java.util.Observer {
         })
 
             // Här skriver vi ut listan innan den sorteras
-            println("!!! ________SORTERAR___________ ")
+            //println("!!! ________SORTERAR___________ ")
             for(t in GlobalAdviceList.globalAdviceList) { println("!!! "+t) }
 
 
 
             // Här skriver vi ut resultatet av den sorterade listan
-            println("!!!___________ ")
+            //println("!!!___________ ")
             for(t in filteredAdviceList) { println("!!! "+t) }
 
             adapter.notifyDataSetChanged()
@@ -152,11 +165,10 @@ class HomePage() : AppCompatActivity(), java.util.Observer {
             val intent = Intent(this, PostItem::class.java)
             startActivity(intent)
 
-
         }
 
-
     }
+
 
     // The is where the filtering of the data gets started
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

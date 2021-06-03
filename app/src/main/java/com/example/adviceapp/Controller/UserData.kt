@@ -1,4 +1,4 @@
-package com.example.adviceapp
+package com.example.adviceapp.Controller
 
 data class UserData (
 

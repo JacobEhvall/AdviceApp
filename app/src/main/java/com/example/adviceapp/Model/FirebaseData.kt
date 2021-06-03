@@ -1,12 +1,10 @@
-package com.example.adviceapp
+package com.example.adviceapp.Model
 
-import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.adviceapp.Controller.PostData
+import com.example.adviceapp.Controller.UserData
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.runBlocking
-import java.io.ByteArrayOutputStream
 
 
 class FirebaseData {
@@ -65,6 +63,8 @@ class FirebaseData {
                 }
     }
 
+    }
+
 
 
          /*
@@ -120,7 +120,7 @@ class FirebaseData {
         }
           */
 
-    }
+
 
 
 

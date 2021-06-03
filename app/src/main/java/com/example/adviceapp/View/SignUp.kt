@@ -1,4 +1,4 @@
-package com.example.adviceapp
+package com.example.adviceapp.View
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.example.adviceapp.Model.FirebaseData
+import com.example.adviceapp.Controller.UserData
+import com.example.adviceapp.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -35,11 +38,16 @@ class SignUp : AppCompatActivity() {
         }
 
     }
+
+
+
     private fun createAccount(email:String, password: String ) {
         if (email == "" || password == "" ) {
             Toast.makeText(this, "no empty fields", Toast.LENGTH_SHORT).show()
         }
         else {
+
+            FirebaseData()
             auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {

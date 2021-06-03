@@ -1,4 +1,4 @@
-package com.example.adviceapp
+package com.example.adviceapp.View
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -24,12 +24,10 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_post_item.*
 import kotlinx.coroutines.*
 
-import androidx.lifecycle.Observer
+import com.example.adviceapp.Controller.PostData
+import com.example.adviceapp.Model.FirebaseData
+import com.example.adviceapp.R
 
-import kotlin.coroutines.coroutineContext
-import com.google.firebase.firestore.FirebaseFirestore
-
-import kotlinx.android.synthetic.main.activity_post_item.*
 import java.io.ByteArrayOutputStream
 
 class PostItem : AppCompatActivity() {
@@ -95,25 +93,25 @@ class PostItem : AppCompatActivity() {
 
     }
 
-    // Post / add data to Firebase
+    // reference to what the user input (what the user has written inside the textinputfield)
     private fun addPost() {
 
         val imageURL = finalImageURL.value.toString();
         val decribeInput = describe_title.text.toString()
         val descriptionInput = description_title.text.toString()
 
+        /* When post the data we have to check that the values are not empty. If
+        any of the text fields are empty we return and display a toast message */
+
         if (decribeInput.isEmpty() || descriptionInput.isEmpty()) {
             Toast.makeText(applicationContext, "No empty fields allowed", Toast.LENGTH_LONG).show()
 
         } else {
 
-
-            FirebaseData().PostAdviceData(decribeInput, descriptionInput, imageURL)
+            // When post the data we call the function from the Firebase class
+            FirebaseData().PostAdviceData(decribeInput, descriptionInput,imageURL)
             toFirstPage()
 
-
-            /*  To be able to add and post data, change the rules to:
-            allow read, write: if request.time < timestamp.date(2020, 9, 2) */
 
         }
 
@@ -150,12 +148,13 @@ class PostItem : AppCompatActivity() {
         }
     }
 
-
+    // When user press the post button the button takes the user back to the firstpage(the recyclerview)
     private fun toFirstPage() {
         val intent = Intent(this, HomePage::class.java)
         startActivity(intent)
     }
 
+    // The images that has been captured by the camera will be saved in a list inside Firebase Storage
     private fun saveImageRecyclerview() {
 
         val imageStorage = FirebaseStorage.getInstance()
@@ -177,6 +176,8 @@ class PostItem : AppCompatActivity() {
 
     }
 
+
+    // The permission to use the camera has been accepted.
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onRequestPermissionsResult(
             requestCode: Int, permissions:

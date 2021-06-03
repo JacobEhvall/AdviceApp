@@ -15,12 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AdviceApp">
         <activity
-            android:name=".SignUp"
-            android:parentActivityName=".HomePage"/>
-        <activity android:name=".PostItem" />
-        <activity android:name=".HomePage"
+            android:name=".View.SignUp"
+            android:parentActivityName=".View.HomePage"/>
+        <activity android:name=".View.PostItem" />
+        <activity android:name=".View.HomePage"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".LogInScreen" >
+        <activity android:name=".View.LogInScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

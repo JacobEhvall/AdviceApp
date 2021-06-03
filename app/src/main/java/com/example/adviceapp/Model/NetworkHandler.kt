@@ -1,4 +1,4 @@
-package com.example.adviceapp
+package com.example.adviceapp.model
 
 import android.content.Context
 import android.net.ConnectivityManager

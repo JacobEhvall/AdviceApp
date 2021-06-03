@@ -1,5 +1,7 @@
 package com.example.adviceapp
 
+import com.example.adviceapp.View.LogInScreen
+import com.example.adviceapp.View.PostItem
 import org.junit.Test
 
 import org.junit.Assert.*
